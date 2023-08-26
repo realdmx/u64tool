@@ -85,7 +85,7 @@ namespace u64tool.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("192.168.1.109")]
+        [global::System.Configuration.DefaultSettingValueAttribute("65.81.1.109")]
         public string U64IP {
             get {
                 return ((string)(this["U64IP"]));

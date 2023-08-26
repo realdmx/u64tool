@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Extensions.Configuration;
 
 namespace u64tool
 {
@@ -22,6 +24,7 @@ namespace u64tool
     public partial class MainWindow : Window
     {
         string lastFile = string.Empty;
+        string hostName = string.Empty;
 
         public MainWindow()
         {
@@ -31,6 +34,9 @@ namespace u64tool
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            IConfigurationRoot config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            hostName = config["u64host"];
+
             if (Properties.Settings.Default.wset)
             {
                 Left = Properties.Settings.Default.wleft;
@@ -149,11 +155,9 @@ namespace u64tool
             }
         }
 
-        private static async Task<byte[]> SendCommand(SocketCommand Command, byte[] data, bool WaitReply)
+        private async Task<byte[]> SendCommand(SocketCommand Command, byte[] data, bool WaitReply)
         {
-            string hostname = Properties.Settings.Default.U64IP;
-
-            if (string.IsNullOrEmpty(hostname))
+            if (string.IsNullOrEmpty(hostName))
             {
                 return Array.Empty<byte>();
             }
@@ -170,7 +174,7 @@ namespace u64tool
                 int length = data.Length;
                 ushort cmd = (ushort)Command;
 
-                await socket.ConnectAsync(hostname, port);
+                await socket.ConnectAsync(hostName, port);
 
                 if (socket.Connected)
                 {
